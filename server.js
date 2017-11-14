@@ -1,8 +1,37 @@
 'use strict';
 
+// Application Dependencies
 const express = require('express');
-const app = express();
+const cors = require('cors');
+// const pg = require('pg'); // Uncomment when ready for PG
 
+// Application Setup
+const app = express();
+const PORT = process.env.PORT;
+const CLIENT_URL = process.env.CLIENT_URL;
+
+// Application Middleware
+app.use(cors());
+
+// Client Request Endpoints
+app.get('*', (req, res) => res.redirect(CLIENT_URL));
+
+// UNIX-Socket for connections
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+// QUESTION: What is our database schema? We need gas station id, location (lat and long?), and price (reg, mid, prem?)
+// Database Setup
+// const client = new pg.Client(process.env.DATABASE_URL);
+// client.connect();
+// client.on('error', console.error);
+
+
+
+
+// TODO: Begin Dustin.
+// TODO: DUSTIN! If you needed to install a google maps dependency, it needs to be reinstalled. I re-init-ed the node project, as it was throwing errors before.
+
+/*
 const googleMaps = require('@google/maps')
 const superagent = require('superagent');
 const googleApiKey = process.env.GOOGLE_MAPS_API_KEY
@@ -54,3 +83,4 @@ superagent(searchUrl)
     err => console.log(`Error: ${err}`)
   )
 // })
+*/
