@@ -14,6 +14,8 @@ const CLIENT_URL = process.env.CLIENT_URL;
 app.use(cors());
 
 // Client Request Endpoints
+app.get('/test', (req, res) => res.send('Hey bro, now we\'re talking!'));
+
 app.get('*', (req, res) => res.redirect(CLIENT_URL));
 
 // UNIX-Socket for connections
