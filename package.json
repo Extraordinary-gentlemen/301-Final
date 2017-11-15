@@ -1,0 +1,29 @@
+{
+  "name": "pumpfinder-server",
+  "version": "1.0.0",
+  "description": "Based off how much gas you need, and your cars avg mpg, find the gas station that will result in the cheapest gas purchase. Curent version is for the Seattle area.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Extraordinary-gentlemen/pumpfinder-server.git"
+  },
+  "author": "Dustin Mundy, Joe Waine, Adrian Hawk, Robert Reed",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Extraordinary-gentlemen/pumpfinder-server/issues"
+  },
+  "homepage": "https://github.com/Extraordinary-gentlemen/pumpfinder-server#readme",
+  "dependencies": {
+    "@google/maps": "^0.4.5",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "node-fetch": "^1.7.3",
+    "node-fetch-json": "0.0.3",
+    "pg": "^7.4.0",
+    "superagent": "^3.8.1"
+  }
+}
