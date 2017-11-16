@@ -50,42 +50,26 @@ app.get('/test', (req, res) => res.send('Hey bro, now we\'re talking!'));
 
 
 app.get('/api/v1/markers/*', (req, res) => {
-
-fetchJson(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+stations&location=${req.params[0]}&radius=40&key=AIzaSyCVLpIcUfTWIcJGdIwb6YJKXUIWg6_jxfg`).then(response => {
-
-        let mapData = response.results.map(data => {
-
-            return {
-              coords: { lat: data.geometry.location.lat, lng: data.geometry.location.lng },
-              address : data.formatted_address,
-              name : data.name,
-              fuelCost: Math.floor((Math.random() * 50) + 250)/100,
-           }
-
-          });
-
-
-        let num = 0;
-        mapData.forEach((datum) => {
-
+  fetchJson(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+stations&location=${req.params[0]}&radius=40&key=AIzaSyCVLpIcUfTWIcJGdIwb6YJKXUIWg6_jxfg`).then(response => {
+    let mapData = response.results.map(data => {
+      return {
+        coords: { lat: data.geometry.location.lat, lng: data.geometry.location.lng },
+        address : data.formatted_address,
+        name : data.name,
+        fuelCost: Math.floor((Math.random() * 50) + 250)/100,
+      }
+    });
+    let num = 0;
+    mapData.forEach((datum) => {
+      fetchJson(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${req.params[0]}&destinations=${datum.coords.lat},${datum.coords.lng}&key=AIzaSyCVLpIcUfTWIcJGdIwb6YJKXUIWg6_jxfg`)
+        .then(response => {
           num++;
-
-        fetchJson(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${req.params[0]}&destinations=${datum.coords.lat},${datum.coords.lng}&key=AIzaSyCVLpIcUfTWIcJGdIwb6YJKXUIWg6_jxfg`).then(response => {
-
-          datum.distance = response.rows[0].elements[0].distance.text;
+          datum.distance = parseFloat(response.rows[0].elements[0].distance.text);
           datum.duration = response.rows[0].elements[0].duration.text;
-          if(num === mapData.length) console.log(mapData);
+          if(num === mapData.length) res.send(mapData);
         });
-
-        });
-
-
-});
-
-
-
-
-
+    });
+  });
 });
 
 app.get('*', (req, res) => res.redirect(CLIENT_URL));
