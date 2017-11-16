@@ -15,7 +15,7 @@ const fetchJson = require('node-fetch-json');
 const app = express();
 const PORT = process.env.PORT;
 const CLIENT_URL = process.env.CLIENT_URL;
-let GOOGLE_KEY = 'AIzaSyB6PFCWQQvDJQhVpPL6PqM3W7ZcywGO1KU'; // Joe's Key
+var GOOGLE_KEY = 'AIzaSyB6PFCWQQvDJQhVpPL6PqM3W7ZcywGO1KU'; // Joe's Key
 
 // Application Middleware
 app.use(cors());
