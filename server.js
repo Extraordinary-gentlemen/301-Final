@@ -5,11 +5,6 @@ const express = require('express');
 const cors = require('cors');
 const fetch = require('node-fetch');
 const fetchJson = require('node-fetch-json');
-// const pg = require('pg');
-
-// const conString = 'postgres://postgres:1234@localhost:5432/postgres';
-// const conString = 'postgres://localhost:5432';
-// const client = new pg.Client(conString);
 
 // Application Setup
 const app = express();
@@ -20,35 +15,6 @@ const CLIENT_URL = process.env.CLIENT_URL;
 app.use(cors());
 
 // Client Request Endpoints
-app.get('/test', (req, res) => res.send('Hey bro, now we\'re talking!'));
-
-// app.get('/api/v1/markers/*', (req, res) => {
-//
-//   var data = {};
-//   fetchJson(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+stations&location=${req.params[0]}&radius=40&key=AIzaSyCVLpIcUfTWIcJGdIwb6YJKXUIWg6_jxfg`)
-//       .then(response => {
-//         let arrayOfDistances = [];
-//         for(let i = 0; i < response.results.length; i++){
-//           fetchJson(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${req.params[0]}&destinations=${response.results[i].geometry.location.lat},${response.results[i].geometry.location.lng}&key=AIzaSyCVLpIcUfTWIcJGdIwb6YJKXUIWg6_jxfg`).then(response2 => {
-//                   arrayOfDistances.push([response2.rows[0].elements[0].distance.text, response2.rows[0].elements[0].duration.text]);
-//                   console.log(arrayOfDistances);
-//           });
-//         }
-//             let resultsObjects = response.results.map(function(x){
-//
-//               return { coords: { lat: x.geometry.location.lat, lng: x.geometry.location.lng}, address: x.formatted_address, name: x.name, distance_time: null, distance_miles: null, price: Math.floor((Math.random() * 50) + 250)/100
-//             }
-//           });
-//
-//           console.log(resultsObjects);
-//
-//
-// res.send(resultsObjects);
-//
-//   });
-// });
-
-
 app.get('/api/v1/markers/*', (req, res) => {
   fetchJson(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+stations&location=${req.params[0]}&radius=40&key=AIzaSyCVLpIcUfTWIcJGdIwb6YJKXUIWg6_jxfg`).then(response => {
     let mapData = response.results.map(data => {
@@ -77,11 +43,8 @@ app.get('*', (req, res) => res.redirect(CLIENT_URL));
 // UNIX-Socket for connections
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
-// QUESTION: What is our database schema? We need gas station id, location (lat and long?), and price (reg, mid, prem?)
-// Database Setup
-// const client = new pg.Client(process.env.DATABASE_URL);
-// client.connect();
-// client.on('error', console.error);
+
+
 
 
 
