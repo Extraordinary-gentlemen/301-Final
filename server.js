@@ -3,7 +3,7 @@
 // Application Dependencies
 const express = require('express');
 const cors = require('cors');
-const fetch = require('node-fetch');
+const fetch = require('node-fetch'); //eslint-disable-line
 const fetchJson = require('node-fetch-json');
 // const pg = require('pg');
 
@@ -15,6 +15,7 @@ const fetchJson = require('node-fetch-json');
 const app = express();
 const PORT = process.env.PORT;
 const CLIENT_URL = process.env.CLIENT_URL;
+let GOOGLE_KEY = 'AIzaSyB6PFCWQQvDJQhVpPL6PqM3W7ZcywGO1KU'; // Joe's Key
 
 // Application Middleware
 app.use(cors());
@@ -23,18 +24,28 @@ app.use(cors());
 app.get('/test', (req, res) => res.send('Hey bro, now we\'re talking!'));
 
 app.get('/api/v1/markers/*', (req, res) => {
-  fetchJson(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+stations&location=${req.params[0]}&radius=40&key=AIzaSyB6PFCWQQvDJQhVpPL6PqM3W7ZcywGO1KU`)
-    .then(response => {
-      res.send(response.results.map(function(x){
-        return { coords: {lat: x.geometry.location.lat, lng: x.geometry.location.lng}, address: x.formatted_address, name: x.name };
-      }));
-    });
+  getGoogleData(req, res);
 });
 
 app.get('*', (req, res) => res.redirect(CLIENT_URL));
 
 // UNIX-Socket for connections
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+function getGoogleData(req, res) {
+  fetchJson(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=gas+stations&location=${req.params[0]}&radius=40&key=${GOOGLE_KEY}`)
+    .then(response => {
+      if(!response.error_message) { // if key is still good
+        res.send(response.results.map(function(x){
+          return { coords: {lat: x.geometry.location.lat, lng: x.geometry.location.lng}, address: x.formatted_address, name: x.name };
+        }));
+      } else { // if key is expired
+        console.log('Key Expired. Switching to Rob\'s');
+        GOOGLE_KEY = 'AIzaSyBrfnZSo_ka20xEroCpEaAQah7gPel2EfY'; // rob's key
+        getGoogleData(req, res);
+      }
+    });
+}
 
 // QUESTION: What is our database schema? We need gas station id, location (lat and long?), and price (reg, mid, prem?)
 // Database Setup
