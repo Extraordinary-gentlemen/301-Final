@@ -10,9 +10,19 @@ const fetchJson = require('node-fetch-json');
 const app = express();
 const PORT = process.env.PORT;
 const CLIENT_URL = process.env.CLIENT_URL;
-const GOOGLE_KEY_1 = process.env.GOOGLE_KEY_1;
-const GOOGLE_KEY_2 = process.env.GOOGLE_KEY_2;
-var GOOGLE_KEY = GOOGLE_KEY_1;
+const keys = [
+  process.env.GOOGLE_KEY_1,
+  process.env.GOOGLE_KEY_2,
+  process.env.GOOGLE_KEY_3,
+  process.env.GOOGLE_KEY_4
+];
+var GOOGLE_KEY = keys[0];
+
+const swapKey = () => {
+  let keyNum = keys.indexOf(GOOGLE_KEY) + 1;
+  if(keyNum === keys.length) keyNum = 0;
+  GOOGLE_KEY = keys[keyNum];
+};
 
 
 // Application Middleware
@@ -56,7 +66,7 @@ function getLocations(req, res) {
         getLocationDetails(req, res, mapData);
       } else { // Key Bad, swap and fire again
         console.log('Key Expired. Switching keys');
-        GOOGLE_KEY = GOOGLE_KEY_2;
+        swapKey();
         getLocations(req, res);
       }
     }, console.error);
