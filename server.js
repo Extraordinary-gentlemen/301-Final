@@ -23,10 +23,21 @@ app.get('/api/v1/markers/*', (req, res) => {
   getLocations(req, res);
 });
 
+app.get('/api/v1/userinput', (req, res) => {
+  getLocationOfUserInput(req, res);
+});
+
+
 app.get('*', (req, res) => res.redirect(CLIENT_URL));
 
 // UNIX-Socket for connections
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+function getLocationOfUserInput(req, res){
+    fetchJson(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.params[0]}&key=${GOOGLE_KEY}`).then(response => {
+              res.send({lat: response.results[0].geometry.location.lat ,lng: response.results[0].geometry.location.lat });
+      });
+  });
 
 function getLocationDetails(req, res, mapData) {
   let num = 0;
