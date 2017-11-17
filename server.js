@@ -4,7 +4,6 @@
 const express = require('express');
 const cors = require('cors');
 const fetchJson = require('node-fetch-json');
-// const fetch = require('node-fetch'); // I'm pretty sure we don't need this
 
 // Application Setup
 const app = express();
@@ -16,6 +15,7 @@ const keys = [
   process.env.GOOGLE_KEY_3,
   process.env.GOOGLE_KEY_4
 ];
+
 var GOOGLE_KEY = keys[0];
 
 const swapKey = () => {
@@ -24,13 +24,16 @@ const swapKey = () => {
   GOOGLE_KEY = keys[keyNum];
 };
 
-
 // Application Middleware
 app.use(cors());
 
 // Client Request Endpoints
 app.get('/api/v1/markers/*', (req, res) => {
   getLocations(req, res);
+});
+
+app.get('/api/v1/userinput/*', (req, res) => {
+  getLocationOfUserInput(req, res);
 });
 
 app.get('*', (req, res) => res.redirect(CLIENT_URL));
@@ -65,9 +68,15 @@ function getLocations(req, res) {
         });
         getLocationDetails(req, res, mapData);
       } else { // Key Bad, swap and fire again
-        console.log('Key Expired. Switching keys');
         swapKey();
         getLocations(req, res);
       }
     }, console.error);
+}
+
+function getLocationOfUserInput(req, res){
+  fetchJson(`https://maps.googleapis.com/maps/api/geocode/json?address=${req.params[0]}&key=${GOOGLE_KEY}`)
+    .then(response => {
+      res.send({lat: response.results[0].geometry.location.lat, lng: response.results[0].geometry.location.lng });
+    });
 }
