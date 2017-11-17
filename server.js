@@ -1,5 +1,4 @@
 'use strict';
-
 // Application Dependencies
 const express = require('express');
 const cors = require('cors');
